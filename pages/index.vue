@@ -1,87 +1,174 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div>
+    <!-- แบบฟอร์มรายงานการใช้ยาเสพติดในโรงดรียน  -->
+    <div class="d-flex align-center" style="height: 80vh">
+      <v-sheet class="flex-fill">
+        <v-container>
+          <div class="title">แบบฟอร์มรายงานการใช้สารเสพติดในโรงเรียน</div>
+          <v-divider></v-divider>
+          <v-form class="mt-5" @submit.prevent="submitReport">
+            <v-row class="align-baseline">
+              <v-col cols="7" class="d-flex align-baseline">
+                <p class="mr-3">เรื่อง : </p>
+                <v-text-field v-model="report.title" outlined dense hide-details></v-text-field>
+              </v-col>
+              <v-col cols="5" class="d-flex align-baseline">
+                <p class="mr-3">วันที่ : </p>
+                <v-menu
+                  v-model="dateMenu"
+                  :close-on-content-click="false"
+                  transition="fade-transition"
+                  offset-y
+                  min-width="290px">
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="formattedDate"
+                      append-icon="mdi-calendar"
+                      outlined
+                      dense
+                      hide-details
+                      readonly
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="report.date" no-title scrollable @input="dateMenu = false">
+                    <v-spacer></v-spacer>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="7">
+                <v-textarea
+                  v-model="report.detail"
+                  label="รายละเอียด"
+                  outlined
+                  rows="5"></v-textarea>
+              </v-col>
+              <v-col cols="5">
+                <v-row class="my-auto">
+                  <v-col cols="12" class="d-flex align-baseline"><p class="mr-3">สถานที่ : </p>
+                    <v-text-field v-model="report.location" outlined dense hide-details></v-text-field>
+                  </v-col>
+                  <v-col cols="12" class="d-flex align-baseline">
+                    <p class="mr-3">รูปภาพประกอบ : </p>
+                    <v-file-input
+                      v-model="report.images"
+                      append-icon="mdi-camera"
+                      outlined
+                      dense
+                      hide-details
+                      label="เลือกรูปภาพ"
+                      accept="image/*"
+                      multiple
+                    ></v-file-input>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" class="d-flex justify-end">
+                <v-btn color="warning" @click="clearText" class="mr-5">ลบข้อมูล</v-btn>
+                <v-btn color="primary" type="submit"
+                       :disabled="!report.title || !report.location || !report.detail || !report.date || !report.images ">
+                  รายงาน
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
+      </v-sheet>
+    </div>
+
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage',
-}
+  name: "Index",
+  data() {
+    return {
+      file: null,
+      result: "",
+      dateMenu: false,
+      report: {
+        title: "",
+        detail: "",
+        location: "",
+        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+        images: null
+      },
+      formattedDate: new Date().toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      })
+    };
+  },
+
+  methods: {
+
+    submitReport() {
+      // console.log(this.report);
+      // confirm dialog
+      this.$swal({
+        title: "ยืนยันการรายงาน",
+        text: "คุณต้องการรายงานข้อมูลนี้ใช่หรือไม่",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก"
+      }).then(async result => {
+        if (result.value) {
+          var formData = new FormData();
+          formData.append("title", this.report.title);
+          formData.append("detail", this.report.detail);
+          formData.append("location", this.report.location);
+          formData.append("date", this.report.date);
+
+          await this.report.images.forEach((image, index) => {
+            formData.append("images", image);
+          });
+
+          this.$axios.$post("report/", formData, {
+            headers: { "content-type": "multipart/form-data" }
+          }).then(res => {
+            if (res) {
+              this.$swal("รายงานสำเร็จ", "ข้อมูลของคุณได้ถูกส่งไปยังผู้ดูแลระบบแล้ว", "success");
+              this.clearText();
+            } else {
+              this.$swal("ผิดพลาด", "รายงานข้อมูลไม่สำเร็จ", "error");
+            }
+          });
+
+
+        }
+      });
+
+    },
+
+    clearText() {
+      this.report.title = "";
+      this.report.detail = "";
+      this.report.location = "";
+      this.report.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+      this.report.images = null;
+    }
+  },
+
+  watch: {
+    "report.date"() {
+      console.log(this.report);
+      this.formattedDate = new Date(this.report.date).toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+  }
+};
 </script>
+
+<style scoped></style>
