@@ -69,7 +69,7 @@
             <v-row>
               <v-col cols="12" class="d-flex justify-end">
                 <v-btn color="warning" @click="clearText" class="mr-5">ลบข้อมูล</v-btn>
-                <v-btn color="primary" type="submit"
+                <v-btn color="primary" type="submit" :loading="loading"
                        :disabled="!report.title || !report.location || !report.detail || !report.date || !report.images ">
                   รายงาน
                 </v-btn>
@@ -91,6 +91,7 @@ export default {
       file: null,
       result: "",
       dateMenu: false,
+      loading: false,
       report: {
         title: "",
         detail: "",
@@ -121,6 +122,9 @@ export default {
         confirmButtonText: "ยืนยัน",
         cancelButtonText: "ยกเลิก"
       }).then(async result => {
+
+        this.loading = true;
+
         if (result.value) {
           var formData = new FormData();
           formData.append("title", this.report.title);
@@ -128,19 +132,23 @@ export default {
           formData.append("location", this.report.location);
           formData.append("date", this.report.date);
 
-          await this.report.images.forEach((image, index) => {
+          await this.report.images.forEach((image) => {
             formData.append("images", image);
           });
 
           this.$axios.$post("report/", formData, {
             headers: { "content-type": "multipart/form-data" }
           }).then(res => {
+            this.loading = false;
             if (res) {
               this.$swal("รายงานสำเร็จ", "ข้อมูลของคุณได้ถูกส่งไปยังผู้ดูแลระบบแล้ว", "success");
               this.clearText();
-            } else {
-              this.$swal("ผิดพลาด", "รายงานข้อมูลไม่สำเร็จ", "error");
             }
+          }).catch(err => {
+            this.loading = false;
+            console.log(err);
+            this.$swal("ผิดพลาด", "รายงานข้อมูลไม่สำเร็จ", "error");
+            this.clearText();
           });
 
 
