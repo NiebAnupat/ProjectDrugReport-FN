@@ -9,17 +9,23 @@
           <v-form class="mt-5" @submit.prevent="submitReport">
             <v-row class="align-baseline">
               <v-col cols="7" class="d-flex align-baseline">
-                <p class="mr-3">เรื่อง : </p>
-                <v-text-field v-model="report.title" outlined dense hide-details></v-text-field>
+                <p class="mr-3">เรื่อง :</p>
+                <v-text-field
+                  v-model="report.title"
+                  outlined
+                  dense
+                  hide-details
+                ></v-text-field>
               </v-col>
               <v-col cols="5" class="d-flex align-baseline">
-                <p class="mr-3">วันที่ : </p>
+                <p class="mr-3">วันที่ :</p>
                 <v-menu
                   v-model="dateMenu"
                   :close-on-content-click="false"
                   transition="fade-transition"
                   offset-y
-                  min-width="290px">
+                  min-width="290px"
+                >
                   <template v-slot:activator="{ on }">
                     <v-text-field
                       v-model="formattedDate"
@@ -31,7 +37,12 @@
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="report.date" no-title scrollable @input="dateMenu = false">
+                  <v-date-picker
+                    v-model="report.date"
+                    no-title
+                    scrollable
+                    @input="dateMenu = false"
+                  >
                     <v-spacer></v-spacer>
                   </v-date-picker>
                 </v-menu>
@@ -43,15 +54,22 @@
                   v-model="report.detail"
                   label="รายละเอียด"
                   outlined
-                  rows="5"></v-textarea>
+                  rows="5"
+                ></v-textarea>
               </v-col>
               <v-col cols="5">
                 <v-row class="my-auto">
-                  <v-col cols="12" class="d-flex align-baseline"><p class="mr-3">สถานที่ : </p>
-                    <v-text-field v-model="report.location" outlined dense hide-details></v-text-field>
+                  <v-col cols="12" class="d-flex align-baseline"
+                    ><p class="mr-3">สถานที่ :</p>
+                    <v-text-field
+                      v-model="report.location"
+                      outlined
+                      dense
+                      hide-details
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" class="d-flex align-baseline">
-                    <p class="mr-3">รูปภาพประกอบ : </p>
+                    <p class="mr-3">รูปภาพประกอบ :</p>
                     <v-file-input
                       v-model="report.images"
                       append-icon="mdi-camera"
@@ -68,9 +86,21 @@
             </v-row>
             <v-row>
               <v-col cols="12" class="d-flex justify-end">
-                <v-btn color="warning" @click="clearText" class="mr-5">ลบข้อมูล</v-btn>
-                <v-btn color="primary" type="submit" :loading="loading"
-                       :disabled="!report.title || !report.location || !report.detail || !report.date || !report.images ">
+                <v-btn color="warning" @click="clearText" class="mr-5"
+                  >ลบข้อมูล</v-btn
+                >
+                <v-btn
+                  color="primary"
+                  type="submit"
+                  :loading="loading"
+                  :disabled="
+                    !report.title ||
+                    !report.location ||
+                    !report.detail ||
+                    !report.date ||
+                    !report.images
+                  "
+                >
                   รายงาน
                 </v-btn>
               </v-col>
@@ -79,104 +109,114 @@
         </v-container>
       </v-sheet>
     </div>
-
   </div>
 </template>
 
 <script>
 export default {
-  name: "Index",
+  name: 'Index',
   data() {
     return {
       file: null,
-      result: "",
+      result: '',
       dateMenu: false,
       loading: false,
       report: {
-        title: "",
-        detail: "",
-        location: "",
-        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        images: null
+        title: '',
+        detail: '',
+        location: '',
+        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
+        images: null,
       },
-      formattedDate: new Date().toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      })
-    };
+      formattedDate: new Date().toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+    }
   },
 
   methods: {
-
     submitReport() {
       // console.log(this.report);
       // confirm dialog
       this.$swal({
-        title: "ยืนยันการรายงาน",
-        text: "คุณต้องการรายงานข้อมูลนี้ใช่หรือไม่",
-        type: "warning",
+        title: 'ยืนยันการรายงาน',
+        text: 'คุณต้องการรายงานข้อมูลนี้ใช่หรือไม่',
+        type: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก"
-      }).then(async result => {
-
-        this.loading = true;
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then(async (result) => {
+        this.loading = true
 
         if (result.value) {
-          var formData = new FormData();
-          formData.append("title", this.report.title);
-          formData.append("detail", this.report.detail);
-          formData.append("location", this.report.location);
-          formData.append("date", this.report.date);
+          var formData = new FormData()
+          formData.append('title', this.report.title)
+          formData.append('detail', this.report.detail)
+          formData.append('location', this.report.location)
+          formData.append('date', this.report.date)
 
           await this.report.images.forEach((image) => {
-            formData.append("images", image);
-          });
+            formData.append('images', image)
+          })
 
-          this.$axios.$post("report/", formData, {
-            headers: { "content-type": "multipart/form-data" }
-          }).then(res => {
-            this.loading = false;
-            if (res) {
-              this.$swal("รายงานสำเร็จ", "ข้อมูลของคุณได้ถูกส่งไปยังผู้ดูแลระบบแล้ว", "success");
-              this.clearText();
-            }
-          }).catch(err => {
-            this.loading = false;
-            console.log(err);
-            this.$swal("ผิดพลาด", "รายงานข้อมูลไม่สำเร็จ", "error");
-            this.clearText();
-          });
-
-
+          this.$axios
+            .$post('report/', formData, {
+              headers: { 'content-type': 'multipart/form-data' },
+            })
+            .then((res) => {
+              this.loading = false
+              if (res) {
+                this.$swal(
+                  'รายงานสำเร็จ',
+                  'ข้อมูลของคุณได้ถูกส่งไปยังผู้ดูแลระบบแล้ว',
+                  'success'
+                )
+                this.clearText()
+              }
+            })
+            .catch((err) => {
+              this.loading = false
+              console.log(err)
+              this.$swal('ผิดพลาด', 'รายงานข้อมูลไม่สำเร็จ', 'error')
+              this.clearText()
+            })
         }
-      });
-
+      })
     },
 
     clearText() {
-      this.report.title = "";
-      this.report.detail = "";
-      this.report.location = "";
-      this.report.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
-      this.report.images = null;
-    }
+      this.report.title = ''
+      this.report.detail = ''
+      this.report.location = ''
+      this.report.date = new Date(
+        Date.now() - new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10)
+      this.report.images = null
+    },
   },
 
   watch: {
-    "report.date"() {
-      console.log(this.report);
-      this.formattedDate = new Date(this.report.date).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      });
-    }
-  }
-};
+    'report.date'() {
+      console.log(this.report)
+      this.formattedDate = new Date(this.report.date).toLocaleDateString(
+        'th-TH',
+        {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }
+      )
+    },
+  },
+}
 </script>
 
 <style scoped></style>
