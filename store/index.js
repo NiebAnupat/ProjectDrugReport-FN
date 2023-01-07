@@ -55,7 +55,8 @@ export const actions = {
   },
 
   async logout({ commit }) {
-    localStorage.removeItem('jwt')
+    // localStorage.removeItem('jwt')
+    Cookies.remove('jwt')
     commit('setUser', null)
     await this.$router.push('/')
   },
