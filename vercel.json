@@ -3,13 +3,7 @@
     {
       "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
-      "config": {
-        "serverFiles": [
-          "package.json",
-          "package-lock.json",
-          "nuxt.config.js"
-        ]
-      }
+      "config": {}
     }
   ]
 }
