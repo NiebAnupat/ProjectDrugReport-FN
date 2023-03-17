@@ -2,6 +2,7 @@
   "name": "ProjectDrugReport",
   "version": "1.0.0",
   "private": true,
+  "engines":["16.16.0"], 
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
