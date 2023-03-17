@@ -3,7 +3,18 @@
     {
       "src": "nuxt.config.js",
       "use": "@nuxtjs/vercel-builder",
-      "config": {}
+      "config": {
+        "serverFiles": [
+          "package.json",
+          "package-lock.json",
+          "nuxt.config.js"
+        ]
+      }
     }
-  ]
+  ],
+  "functions": {
+    "prebuild": {
+      "runtime": "nodejs16.x"
+    }
+  }
 }
