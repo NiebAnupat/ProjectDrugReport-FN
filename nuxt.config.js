@@ -44,7 +44,7 @@ export default {
   modules: ['@nuxtjs/axios', 'nuxt-sweetalert2'],
 
   axios: {
-    baseURL: 'https://project-drug-report-bn.vercel.app/auth/',
+    baseURL: 'https://project-drug-report-bn.vercel.app/',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
